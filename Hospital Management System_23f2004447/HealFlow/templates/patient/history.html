@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Medical History - Hospital MS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-file-medical"></i> My Medical History</h2>
+
+<div class="card">
+    <div class="card-body">
+        {% if appointments %}
+        {% for appointment in appointments %}
+        <div class="card mb-3">
+            <div class="card-header bg-success text-white">
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>{{ appointment.doctor.full_name }}</strong> - {{ appointment.doctor.department.name }}
+                    </div>
+                    <div class="col-md-6 text-end">
+                        {{ appointment.appointment_date|format_date }} at {{ appointment.appointment_time|format_time }}
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if appointment.treatment %}
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <h6><i class="bi bi-clipboard-pulse"></i> Diagnosis:</h6>
+                        <p>{{ appointment.treatment.diagnosis }}</p>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <h6><i class="bi bi-capsule"></i> Prescription:</h6>
+                        <p>{{ appointment.treatment.prescription or 'No prescription provided' }}</p>
+                    </div>
+                    {% if appointment.treatment.notes %}
+                    <div class="col-md-12">
+                        <h6><i class="bi bi-file-text"></i> Additional Notes:</h6>
+                        <p>{{ appointment.treatment.notes }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                {% else %}
+                <p class="text-muted">No treatment record available for this appointment.</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="text-center text-muted">No completed appointments found. Your medical history will appear here after
+            your appointments are completed by doctors.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Hospital MS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5 fade-in">
+    <div class="col-md-5">
+        <div class="card shadow-lg login-card">
+            <div class="card-header text-white text-center py-4"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <i class="bi bi-hospital-fill" style="font-size: 3rem;"></i>
+                <h3 class="mt-2 mb-1">Hospital Management</h3>
+                <p class="mb-0 opacity-75">Login to Your Account</p>
+            </div>
+            <div class="card-body p-5">
+                <form method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-3">
+                        {{ form.username.label(class="form-label") }}
+                        {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""),
+                        placeholder="Enter username", required=True) }}
+                        {% if form.username.errors %}
+                        <div class="invalid-feedback">
+                            {% for error in form.username.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.password.label(class="form-label") }}
+                        {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""),
+                        placeholder="Enter password", required=True) }}
+                        {% if form.password.errors %}
+                        <div class="invalid-feedback">
+                            {% for error in form.password.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center py-3 bg-light">
+                <p class="mb-2">New patient? <a href="{{ url_for('register') }}"
+                        class="text-decoration-none fw-bold">Register here</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

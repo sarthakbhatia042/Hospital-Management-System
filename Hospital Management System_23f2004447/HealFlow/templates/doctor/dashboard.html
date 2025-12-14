@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block title %}Doctor Dashboard - Hospital MS{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="page-title mb-0"><i class="bi bi-speedometer2"></i> Doctor Dashboard</h2>
+            <p class="text-muted mb-0">Welcome back, {{ doctor.full_name }}</p>
+        </div>
+        <div class="text-end">
+            <a href="{{ url_for('doctor_availability') }}" class="btn btn-outline-primary">
+                <i class="bi bi-calendar-plus"></i> Manage Availability
+            </a>
+        </div>
+    </div>
+
+    <div class="row mb-4 g-4">
+        <div class="col-md-3 col-6">
+            <div class="card h-100 border-0"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <div class="card-body text-center py-4 position-relative">
+                    <div class="position-absolute" style="top: 10px; right: 15px; opacity: 0.2;">
+                        <i class="bi bi-calendar-check" style="font-size: 3rem;"></i>
+                    </div>
+                    <h2 class="fw-bold mb-1">{{ upcoming_appointments|length }}</h2>
+                    <p class="mb-0 small text-uppercase fw-semibold">Upcoming Visits</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card h-100 border-0"
+                style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+                <div class="card-body text-center py-4 position-relative">
+                    <div class="position-absolute" style="top: 10px; right: 15px; opacity: 0.2;">
+                        <i class="bi bi-people-fill" style="font-size: 3rem;"></i>
+                    </div>
+                    <h2 class="fw-bold mb-1">{{ patients_count }}</h2>
+                    <p class="mb-0 small text-uppercase fw-semibold">Total Patients</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card h-100 border-0"
+                style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white;">
+                <div class="card-body text-center py-4 position-relative">
+                    <div class="position-absolute" style="top: 10px; right: 15px; opacity: 0.2;">
+                        <i class="bi bi-clock-history" style="font-size: 3rem;"></i>
+                    </div>
+                    <h2 class="fw-bold mb-1">{{ availabilities|length }}</h2>
+                    <p class="mb-0 small text-uppercase fw-semibold">Available Days</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card h-100 border-0"
+                style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white;">
+                <div class="card-body text-center py-4 position-relative">
+                    <div class="position-absolute" style="top: 10px; right: 15px; opacity: 0.2;">
+                        <i class="bi bi-hospital" style="font-size: 3rem;"></i>
+                    </div>
+                    <h2 class="fw-bold mb-1" style="font-size: 1.3rem;">{{ doctor.department.name }}</h2>
+                    <p class="mb-0 small text-uppercase fw-semibold">Department</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Upcoming Appointments -->
+        <div class="col-lg-8 mb-4">
+            <div class="card h-100">
+                <div class="card-header gradient-warning text-white">
+                    <h5 class="mb-0"><i class="bi bi-calendar-event"></i> Upcoming Appointments</h5>
+                </div>
+                <div class="card-body">
+                    {% if upcoming_appointments %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Date & Time</th>
+                                    <th>Patient</th>
+                                    <th>Reason</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for appointment in upcoming_appointments %}
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold">{{ appointment.appointment_date|format_date }}</div>
+                                        <small class="text-muted">{{ appointment.appointment_time|format_time }}</small>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold">{{ appointment.patient.full_name }}</div>
+                                        <small class="text-muted">{{ appointment.patient.gender }}, {{
+                                            appointment.patient.age }}</small>
+                                    </td>
+                                    <td>{{ appointment.reason }}</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{{ url_for('doctor_complete_appointment', appointment_id=appointment.id) }}"
+                                                class="btn btn-success" title="Mark Completed">
+                                                <i class="bi bi-check-lg"></i> Complete
+                                            </a>
+                                            <form
+                                                action="{{ url_for('doctor_cancel_appointment', appointment_id=appointment.id) }}"
+                                                method="POST" class="d-inline"
+                                                onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
+                                                <button type="submit" class="btn btn-outline-danger" title="Cancel">
+                                                    <i class="bi bi-x-lg"></i> Cancel
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-calendar-x display-4"></i>
+                        <p class="mt-2">No upcoming appointments for the next 7 days.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Assigned Patients -->
+        <div class="col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header gradient-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-people"></i> Assigned Patients</h5>
+                </div>
+                <div class="card-body">
+                    {% if assigned_patients %}
+                    <div class="list-group list-group-flush">
+                        {% for patient in assigned_patients %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-circle bg-info text-white me-2 rounded-circle d-flex align-items-center justify-content-center"
+                                    style="width: 35px; height: 35px;">
+                                    {{ patient.full_name[0] }}
+                                </div>
+                                <div>
+                                    <div class="fw-bold">{{ patient.full_name }}</div>
+                                    <small class="text-muted">{{ patient.phone }}</small>
+                                </div>
+                            </div>
+                            <a href="{{ url_for('doctor_patient_history', patient_id=patient.id) }}"
+                                class="btn btn-sm btn-outline-primary">
+                                View
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4 text-muted">
+                        <p>No patients assigned yet.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Doctor's Availability -->
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header gradient-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-clock"></i> Your Availability (Next 7 Days)</h5>
+                </div>
+                <div class="card-body">
+                    {% if availabilities %}
+                    <div class="row">
+                        {% for availability in availabilities %}
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="border rounded p-3 text-center bg-light h-100">
+                                <h6 class="fw-bold text-primary">{{ availability.date|format_date }}</h6>
+                                <div class="badge bg-success mb-2">Available</div>
+                                <p class="mb-0">
+                                    {{ availability.start_time|format_time }} - {{ availability.end_time|format_time }}
+                                </p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <p class="text-muted">You haven't set your availability for the upcoming week.</p>
+                        <a href="{{ url_for('doctor_availability') }}" class="btn btn-primary">Set Availability</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

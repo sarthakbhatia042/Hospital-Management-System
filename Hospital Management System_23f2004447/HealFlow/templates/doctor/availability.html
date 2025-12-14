@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}My Availability - Hospital MS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-calendar3"></i> My Availability</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Add Availability</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.date.label(class="form-label") }}
+                        {{ form.date(class="form-control", required=True) }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.start_time.label(class="form-label") }}
+                        {{ form.start_time(class="form-control", required=True) }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.end_time.label(class="form-label") }}
+                        {{ form.end_time(class="form-control", required=True) }}
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Add Availability
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">My Availability (Next 7 Days)</h5>
+            </div>
+            <div class="card-body">
+                {% if availabilities %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for availability in availabilities %}
+                            <tr>
+                                <td>{{ availability.date|format_date }}</td>
+                                <td>{{ availability.start_time|format_time }}</td>
+                                <td>{{ availability.end_time|format_time }}</td>
+                                <td>
+                                    {% if availability.is_available %}
+                                        <span class="badge bg-success">Available</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Not Available</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-center text-muted">No availability set for the next 7 days.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

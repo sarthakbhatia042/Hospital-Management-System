@@ -1,0 +1,138 @@
+openapi: 3.0.0
+info:
+  title: HealFlow Hospital Management System
+  description: Web application for managing hospital operations, appointments, and medical records.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000
+    description: Local Development Server
+
+paths:
+  # --- Authentication ---
+  /login:
+    get:
+      summary: Get login page
+      responses:
+        '200':
+          description: HTML Login form
+    post:
+      summary: Authenticate user
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '302':
+          description: Redirect to dashboard on success
+
+  /register:
+    post:
+      summary: Register new patient
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                full_name:
+                  type: string
+      responses:
+        '302':
+          description: Redirect to login on success
+
+  # --- Doctor Operations ---
+  /doctor/dashboard:
+    get:
+      summary: Doctor Dashboard
+      description: Returns dashboard HTML with stats and upcoming appointments
+      responses:
+        '200':
+          description: Dashboard HTML page
+
+  /doctor/availability:
+    post:
+      summary: Set Availability
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date
+                start_time:
+                  type: string
+                  format: time
+                end_time:
+                  type: string
+                  format: time
+      responses:
+        '302':
+          description: Availability saved
+
+  # --- Patient Operations ---
+  /patient/doctors:
+    get:
+      summary: Search Doctors
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search by name or department
+      responses:
+        '200':
+          description: List of doctors HTML
+
+  /patient/book-appointment/{doctorId}:
+    post:
+      summary: Book Appointment
+      parameters:
+        - name: doctorId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                appointment_date:
+                  type: string
+                  format: date
+                appointment_time:
+                  type: string
+                  format: time
+                reason:
+                  type: string
+      responses:
+        '302':
+          description: Appointment booked successfully
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        role:
+          type: string
+          enum: [admin, doctor, patient]

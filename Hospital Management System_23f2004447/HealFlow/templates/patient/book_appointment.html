@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Book Appointment - Hospital MS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0"><i class="bi bi-calendar-plus"></i> Book Appointment</h4>
+            </div>
+            <div class="card-body">
+                <div class="card mb-3 bg-light">
+                    <div class="card-body">
+                        <h5>{{ doctor.full_name }}</h5>
+                        <p class="mb-1"><strong>Department:</strong> {{ doctor.department.name }}</p>
+                        <p class="mb-1"><strong>Qualification:</strong> {{ doctor.qualification }}</p>
+                        <p class="mb-0"><strong>Consultation Fee:</strong> ₹{{ doctor.consultation_fee }}</p>
+                    </div>
+                </div>
+
+                {% if availabilities %}
+                <div class="alert alert-info">
+                    <strong>Doctor's Availability (Next 7 Days):</strong>
+                    <ul class="mb-0">
+                        {% for availability in availabilities %}
+                        <li>{{ availability.date|format_date }}: {{ availability.start_time|format_time }} - {{
+                            availability.end_time|format_time }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    {{ form.doctor_id(type="hidden") }}
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.appointment_date.label(class="form-label") }}
+                            {{ form.appointment_date(class="form-control", required=True) }}
+                            <small class="text-muted">Select a date within doctor's availability</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.appointment_time.label(class="form-label") }}
+                            {{ form.appointment_time(class="form-control", required=True) }}
+                            <small class="text-muted">Format: HH:MM (24-hour)</small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.reason.label(class="form-label") }}
+                        {{ form.reason(class="form-control", rows="3", placeholder="Describe your health concern...") }}
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> Book Appointment
+                        </button>
+                        <a href="{{ url_for('patient_doctors') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

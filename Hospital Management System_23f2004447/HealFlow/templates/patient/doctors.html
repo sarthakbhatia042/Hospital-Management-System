@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Find Doctors - Hospital MS{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <h2 class="page-title"><i class="bi bi-search"></i> Find Doctors</h2>
+
+    <div class="card mb-4 search-box shadow-lg">
+        <div class="card-body p-4">
+            <form method="GET" class="row g-3">
+                <div class="col-md-5">
+                    <input type="text" name="search" class="form-control form-control-lg"
+                        placeholder="🔍 Search by name or specialization..." value="{{ search }}">
+                </div>
+                <div class="col-md-5">
+                    <select name="department" class="form-select form-select-lg">
+                        <option value="">All Departments</option>
+                        {% for dept in departments %}
+                        <option value="{{ dept.id }}">{{ dept.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100 btn-lg">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for doctor in doctors %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 doctor-card shadow-lg">
+                <div class="card-header gradient-header text-white">
+                    <h5 class="mb-0">{{ doctor.full_name }}</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Department:</strong> {{ doctor.department.name }}</p>
+                    <p><strong>Qualification:</strong> {{ doctor.qualification }}</p>
+                    <p><strong>Experience:</strong> {{ doctor.experience_years }} years</p>
+                    <p><strong>Consultation Fee:</strong> ₹{{ doctor.consultation_fee }}</p>
+                    <p><strong>Phone:</strong> {{ doctor.phone }}</p>
+
+                    <h6 class="mt-3">Availability (Next 7 Days):</h6>
+                    {% if doctor_availability[doctor.id] %}
+                    <ul class="list-group list-group-flush">
+                        {% for availability in doctor_availability[doctor.id] %}
+                        <li class="list-group-item p-2">
+                            <small>{{ availability.date|format_date }}: {{ availability.start_time|format_time }} - {{
+                                availability.end_time|format_time }}</small>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted"><small>No availability set</small></p>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('patient_book_appointment', doctor_id=doctor.id) }}"
+                        class="btn btn-success w-100">
+                        <i class="bi bi-calendar-plus"></i> Book Appointment
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

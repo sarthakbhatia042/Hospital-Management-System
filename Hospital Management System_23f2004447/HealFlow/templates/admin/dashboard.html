@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Hospital MS{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="page-title mb-0"><i class="bi bi-speedometer2"></i> Admin Dashboard</h2>
+        <form action="{{ url_for('admin_doctors') }}" method="get" class="d-flex">
+            <input class="form-control me-2 search-box" type="search" name="search"
+                placeholder="Search doctors, patients..." aria-label="Search">
+            <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+        </form>
+    </div>
+
+    <div class="row mb-4 g-4">
+        <div class="col-md-3 col-6">
+            <div class="card h-100 border-0"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <div class="card-body text-center py-4 position-relative">
+                    <div class="position-absolute" style="top: 10px; right: 15px; opacity: 0.2;">
+                        <i class="bi bi-people-fill" style="font-size: 3rem;"></i>
+                    </div>
+                    <h2 class="fw-bold mb-1">{{ total_doctors }}</h2>
+                    <p class="mb-0 small text-uppercase fw-semibold">Total Doctors</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card h-100 border-0"
+                style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+                <div class="card-body text-center py-4 position-relative">
+                    <div class="position-absolute" style="top: 10px; right: 15px; opacity: 0.2;">
+                        <i class="bi bi-person-fill" style="font-size: 3rem;"></i>
+                    </div>
+                    <h2 class="fw-bold mb-1">{{ total_patients }}</h2>
+                    <p class="mb-0 small text-uppercase fw-semibold">Total Patients</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card h-100 border-0"
+                style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+                <div class="card-body text-center py-4 position-relative">
+                    <div class="position-absolute" style="top: 10px; right: 15px; opacity: 0.2;">
+                        <i class="bi bi-calendar-check" style="font-size: 3rem;"></i>
+                    </div>
+                    <h2 class="fw-bold mb-1">{{ total_appointments }}</h2>
+                    <p class="mb-0 small text-uppercase fw-semibold">All Appointments</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card h-100 border-0"
+                style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white;">
+                <div class="card-body text-center py-4 position-relative">
+                    <div class="position-absolute" style="top: 10px; right: 15px; opacity: 0.2;">
+                        <i class="bi bi-clock-fill" style="font-size: 3rem;"></i>
+                    </div>
+                    <h2 class="fw-bold mb-1">{{ upcoming_appointments }}</h2>
+                    <p class="mb-0 small text-uppercase fw-semibold">Upcoming</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Registered Doctors -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header gradient-dark text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-person-badge"></i> Registered Doctors</h5>
+                    <a href="{{ url_for('admin_add_doctor') }}" class="btn btn-sm btn-light text-primary fw-bold">
+                        <i class="bi bi-plus-circle"></i> Add New
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Dept</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for doctor in doctors %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-circle bg-primary text-white me-2 rounded-circle d-flex align-items-center justify-content-center"
+                                                style="width: 40px; height: 40px;">{{ doctor.full_name[0] }}</div>
+                                            <div>
+                                                <div class="fw-bold">{{ doctor.full_name }}</div>
+                                                <small class="text-muted">{{ doctor.phone }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge bg-info text-dark">{{ doctor.department.name }}</span></td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{{ url_for('admin_edit_doctor', doctor_id=doctor.id) }}"
+                                                class="btn btn-outline-primary" title="Edit"><i
+                                                    class="bi bi-pencil"></i></a>
+                                            <form action="{{ url_for('admin_delete_doctor', doctor_id=doctor.id) }}"
+                                                method="POST" class="d-inline"
+                                                onsubmit="return confirm('Are you sure?');">
+                                                <button type="submit" class="btn btn-outline-danger" title="Delete"><i
+                                                        class="bi bi-trash"></i></button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('admin_doctors') }}" class="btn btn-link text-decoration-none">View All
+                            Doctors <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registered Patients -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header gradient-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-people"></i> Registered Patients</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Contact</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for patient in patients %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-circle bg-success text-white me-2 rounded-circle d-flex align-items-center justify-content-center"
+                                                style="width: 40px; height: 40px;">{{ patient.full_name[0] }}</div>
+                                            <div>
+                                                <div class="fw-bold">{{ patient.full_name }}</div>
+                                                <small class="text-muted">ID: {{ patient.id }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{ patient.phone }}</td>
+                                    <td>
+                                        <form action="{{ url_for('admin_delete_patient', patient_id=patient.id) }}"
+                                            method="POST" class="d-inline" onsubmit="return confirm('Are you sure?');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                title="Delete"><i class="bi bi-trash"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('admin_patients') }}" class="btn btn-link text-decoration-none">View All
+                            Patients <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Upcoming Appointments -->
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header gradient-warning text-white">
+                    <h5 class="mb-0"><i class="bi bi-calendar-event"></i> Recent Appointments</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Patient</th>
+                                    <th>Doctor</th>
+                                    <th>Date & Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for appointment in recent_appointments %}
+                                <tr>
+                                    <td>#{{ appointment.id }}</td>
+                                    <td>{{ appointment.patient.full_name }}</td>
+                                    <td>{{ appointment.doctor.full_name }}</td>
+                                    <td>
+                                        <div>{{ appointment.appointment_date|format_date }}</div>
+                                        <small class="text-muted">{{ appointment.appointment_time|format_time }}</small>
+                                    </td>
+                                    <td>
+                                        {% if appointment.status == 'Booked' %}
+                                        <span class="badge bg-primary">{{ appointment.status }}</span>
+                                        {% elif appointment.status == 'Completed' %}
+                                        <span class="badge bg-success">{{ appointment.status }}</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">{{ appointment.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('admin_appointments') }}" class="btn btn-link text-decoration-none">View All
+                            Appointments <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

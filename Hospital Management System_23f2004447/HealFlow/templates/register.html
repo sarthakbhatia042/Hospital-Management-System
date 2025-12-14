@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Registration - Hospital MS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4 fade-in">
+    <div class="col-md-8">
+        <div class="card shadow-lg register-card">
+            <div class="card-header text-white text-center py-4" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                <i class="bi bi-person-plus-fill" style="font-size: 3rem;"></i>
+                <h3 class="mt-2 mb-1">Patient Registration</h3>
+                <p class="mb-0 opacity-75">Create Your Account</p>
+            </div>
+            <div class="card-body p-5">
+                <form method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.username.label(class="form-label") }}
+                            {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""), required=True) }}
+                            {% if form.username.errors %}
+                                <div class="invalid-feedback">{% for error in form.username.errors %}{{ error }}{% endfor %}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.email.label(class="form-label") }}
+                            {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), type="email", required=True) }}
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback">{% for error in form.email.errors %}{{ error }}{% endfor %}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.password.label(class="form-label") }}
+                            {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), required=True, minlength="6") }}
+                            {% if form.password.errors %}
+                                <div class="invalid-feedback">{% for error in form.password.errors %}{{ error }}{% endfor %}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.confirm_password.label(class="form-label") }}
+                            {{ form.confirm_password(class="form-control" + (" is-invalid" if form.confirm_password.errors else ""), required=True) }}
+                            {% if form.confirm_password.errors %}
+                                <div class="invalid-feedback">{% for error in form.confirm_password.errors %}{{ error }}{% endfor %}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.full_name.label(class="form-label") }}
+                            {{ form.full_name(class="form-control" + (" is-invalid" if form.full_name.errors else ""), required=True) }}
+                            {% if form.full_name.errors %}
+                                <div class="invalid-feedback">{% for error in form.full_name.errors %}{{ error }}{% endfor %}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.phone.label(class="form-label") }}
+                            {{ form.phone(class="form-control" + (" is-invalid" if form.phone.errors else ""), type="tel", required=True) }}
+                            {% if form.phone.errors %}
+                                <div class="invalid-feedback">{% for error in form.phone.errors %}{{ error }}{% endfor %}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            {{ form.date_of_birth.label(class="form-label") }}
+                            {{ form.date_of_birth(class="form-control" + (" is-invalid" if form.date_of_birth.errors else ""), required=True) }}
+                            {% if form.date_of_birth.errors %}
+                                <div class="invalid-feedback">{% for error in form.date_of_birth.errors %}{{ error }}{% endfor %}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            {{ form.gender.label(class="form-label") }}
+                            {{ form.gender(class="form-select" + (" is-invalid" if form.gender.errors else ""), required=True) }}
+                            {% if form.gender.errors %}
+                                <div class="invalid-feedback">{% for error in form.gender.errors %}{{ error }}{% endfor %}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            {{ form.blood_group.label(class="form-label") }}
+                            {{ form.blood_group(class="form-select" + (" is-invalid" if form.blood_group.errors else "")) }}
+                            {% if form.blood_group.errors %}
+                                <div class="invalid-feedback">{% for error in form.blood_group.errors %}{{ error }}{% endfor %}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.address.label(class="form-label") }}
+                        {{ form.address(class="form-control" + (" is-invalid" if form.address.errors else ""), rows="3") }}
+                        {% if form.address.errors %}
+                            <div class="invalid-feedback">{% for error in form.address.errors %}{{ error }}{% endfor %}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-person-plus"></i> Register
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center py-3 bg-light">
+                <p class="mb-0">Already have an account? <a href="{{ url_for('login') }}" class="text-decoration-none fw-bold">Login here</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

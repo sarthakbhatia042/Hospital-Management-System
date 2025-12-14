@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Complete Appointment - Hospital MS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0"><i class="bi bi-check-circle"></i> Complete Appointment</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <strong>Patient:</strong> {{ appointment.patient.full_name }}<br>
+                    <strong>Date:</strong> {{ appointment.appointment_date|format_date }}<br>
+                    <strong>Time:</strong> {{ appointment.appointment_time|format_time }}
+                </div>
+                
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.diagnosis.label(class="form-label") }}
+                        {{ form.diagnosis(class="form-control", rows="4", required=True, placeholder="Enter diagnosis details...") }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.prescription.label(class="form-label") }}
+                        {{ form.prescription(class="form-control", rows="4", placeholder="Enter prescription details...") }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.notes.label(class="form-label") }}
+                        {{ form.notes(class="form-control", rows="3", placeholder="Any additional notes...") }}
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> Complete & Save Treatment
+                        </button>
+                        <a href="{{ url_for('doctor_appointments') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

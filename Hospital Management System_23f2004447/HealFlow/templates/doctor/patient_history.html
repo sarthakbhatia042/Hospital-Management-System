@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Patient History - Hospital MS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-file-medical"></i> Patient History: {{ patient.full_name }}</h2>
+
+<div class="card mb-3">
+    <div class="card-header bg-info text-white">
+        <h5 class="mb-0">Patient Information</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3"><strong>Name:</strong> {{ patient.full_name }}</div>
+            <div class="col-md-3"><strong>Gender:</strong> {{ patient.gender }}</div>
+            <div class="col-md-3"><strong>Blood Group:</strong> {{ patient.blood_group or 'N/A' }}</div>
+            <div class="col-md-3"><strong>Phone:</strong> {{ patient.phone }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">Completed Appointments & Treatments</h5>
+    </div>
+    <div class="card-body">
+        {% if appointments %}
+        {% for appointment in appointments %}
+        <div class="card mb-3">
+            <div class="card-header">
+                <strong>{{ appointment.appointment_date|format_date }}</strong> at {{ appointment.appointment_time|format_time }}
+            </div>
+            <div class="card-body">
+                {% if appointment.treatment %}
+                <p><strong>Diagnosis:</strong> {{ appointment.treatment.diagnosis }}</p>
+                <p><strong>Prescription:</strong> {{ appointment.treatment.prescription or 'None' }}</p>
+                <p><strong>Notes:</strong> {{ appointment.treatment.notes or 'None' }}</p>
+                {% else %}
+                <p class="text-muted">No treatment record available.</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="text-center text-muted">No completed appointments found for this patient.</p>
+        {% endif %}
+    </div>
+</div>
+
+<a href="{{ url_for('doctor_dashboard') }}" class="btn btn-secondary mt-3">
+    <i class="bi bi-arrow-left"></i> Back to Dashboard
+</a>
+{% endblock %}
